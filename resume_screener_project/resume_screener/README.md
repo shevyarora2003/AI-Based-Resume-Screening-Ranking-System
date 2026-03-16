@@ -101,12 +101,14 @@ Form data:
 - `resumes` (files) — One or more resume files
 
 Returns JSON with ranked candidate list and score breakdown.
+ 
   OR 
 1️⃣ Open Terminal in VS Code
 
 Press:
 
-Ctrl + `
+``` Ctrl + `
+```
 
 or click Terminal → New Terminal
 
@@ -114,7 +116,7 @@ or click Terminal → New Terminal
 
 Run:
 
-cd C:\Users\ASUS\Downloads\resume_screener_project
+``` cd C:\Users\ASUS\Downloads\resume_screener_project ```
 
 If you are already inside it, you can skip this.
 
@@ -122,7 +124,7 @@ If you are already inside it, you can skip this.
 
 Run:
 
-pip install flask spacy nltk scikit-learn PyPDF2 docx2txt
+``` pip install flask spacy nltk scikit-learn PyPDF2 docx2txt ```
 
 Wait until installation finishes.
 
@@ -130,7 +132,7 @@ Wait until installation finishes.
 
 Run:
 
-python -m spacy download en_core_web_sm
+```python -m spacy download en_core_web_sm```
 
 This is required for the NLP processing in your project.
 
@@ -138,16 +140,16 @@ This is required for the NLP processing in your project.
 
 Now run:
 
-python resume_screener/app.py
+```python resume_screener/app.py```
 
 or if already inside the folder:
 
-python app.py
+```python app.py```
 6️⃣ Open in Browser
 
 Open:
 
-http://127.0.0.1:5000
+```http://127.0.0.1:5000```
 
 Your AI Resume Screening System will open.
 
@@ -155,14 +157,14 @@ Your AI Resume Screening System will open.
 
 Try:
 
-python -m pip install flask
+``` python -m pip install flask ```
 8️⃣ Best Way (Recommended for Projects)
 
 Use requirements.txt.
 
 Run:
 
-pip install -r requirements.txt
+``` pip install -r requirements.txt ```
 
 This installs all project dependencies automatically.
 ## Demo Mode
