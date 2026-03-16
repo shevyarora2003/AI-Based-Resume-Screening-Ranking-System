@@ -107,8 +107,7 @@ Returns JSON with ranked candidate list and score breakdown.
 
 Press:
 
-``` Ctrl + `
-```
+``` Ctrl + ` ```
 
 or click Terminal → New Terminal
 
