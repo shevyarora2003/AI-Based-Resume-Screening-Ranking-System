@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RecruitAI — Intelligent Resume Screener</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-brand">
+        <span class="brand-icon">⬡</span>
+        <span class="brand-name">RecruitAI</span>
+    </div>
+    <div class="nav-tagline">Powered by NLP + Machine Learning</div>
+    <div class="nav-badges">
+        <span class="badge">spaCy</span>
+        <span class="badge">scikit-learn</span>
+        <span class="badge">Flask</span>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-eyebrow">AI-Powered HR Tool</div>
+        <h1 class="hero-title">Screen Smarter.<br><em>Hire Faster.</em></h1>
+        <p class="hero-sub">Upload resumes, define requirements, and let machine learning rank your candidates instantly — with full transparency.</p>
+        <div class="hero-stats">
+            <div class="stat"><span class="stat-num" id="stat-processed">0</span><span class="stat-label">Resumes Processed</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">40+</span><span class="stat-label">Skills Detected</span></div>
+            <div class="stat-divider"></div>
+            <div class="stat"><span class="stat-num">5</span><span class="stat-label">Scoring Dimensions</span></div>
+        </div>
+    </div>
+    <div class="hero-visual">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+        <div class="hero-card">
+            <div class="hc-row"><span class="hc-dot green"></span> Skills Match</div>
+            <div class="hc-bar"><div class="hc-fill" style="width:87%"></div></div>
+            <div class="hc-row"><span class="hc-dot blue"></span> JD Similarity</div>
+            <div class="hc-bar"><div class="hc-fill blue" style="width:72%"></div></div>
+            <div class="hc-row"><span class="hc-dot yellow"></span> Experience</div>
+            <div class="hc-bar"><div class="hc-fill yellow" style="width:60%"></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- MAIN FORM -->
+<section class="form-section" id="main-form">
+    <div class="container">
+        <div class="section-label">Step 1 — Job Requirements</div>
+        <div class="form-grid">
+            <!-- Left: Job Details -->
+            <div class="form-panel">
+                <div class="panel-header">
+                    <span class="panel-icon">📋</span>
+                    <h2>Job Description</h2>
+                </div>
+                
+                <div class="field-group">
+                    <label class="field-label">Paste Job Description <span class="required">*</span></label>
+                    <textarea id="job_description" class="field-textarea" placeholder="e.g. We are looking for a Full Stack Developer with experience in React, Node.js, and AWS. Candidate should have strong problem-solving skills and 3+ years of experience..." rows="8"></textarea>
+                    <div class="field-hint">Include role responsibilities, required qualifications, and company context.</div>
+                </div>
+
+                <div class="form-row">
+                    <div class="field-group half">
+                        <label class="field-label">Required Skills</label>
+                        <input type="text" id="required_skills" class="field-input" placeholder="python, react, sql, docker">
+                        <div class="field-hint">Comma-separated list</div>
+                    </div>
+                    <div class="field-group half">
+                        <label class="field-label">Min. Experience (years)</label>
+                        <input type="number" id="experience_years" class="field-input" placeholder="3" min="0" max="20" value="0">
+                    </div>
+                </div>
+
+                <!-- Quick Presets -->
+                <div class="presets">
+                    <span class="preset-label">Quick presets:</span>
+                    <button class="preset-btn" onclick="loadPreset('fullstack')">Full Stack Dev</button>
+                    <button class="preset-btn" onclick="loadPreset('datascience')">Data Scientist</button>
+                    <button class="preset-btn" onclick="loadPreset('devops')">DevOps Engineer</button>
+                </div>
+            </div>
+
+            <!-- Right: Resume Upload -->
+            <div class="form-panel">
+                <div class="panel-header">
+                    <span class="panel-icon">📁</span>
+                    <h2>Upload Resumes</h2>
+                </div>
+
+                <div class="upload-zone" id="upload-zone" onclick="document.getElementById('resume-files').click()">
+                    <input type="file" id="resume-files" multiple accept=".pdf,.docx,.txt" style="display:none" onchange="handleFileSelect(this)">
+                    <div class="upload-icon">⬆</div>
+                    <div class="upload-title">Drop resumes here or click to browse</div>
+                    <div class="upload-sub">Supports PDF, DOCX, TXT — up to 16MB each</div>
+                </div>
+
+                <div id="file-list" class="file-list"></div>
+
+                <div class="file-count-bar" id="file-count-bar" style="display:none">
+                    <span id="file-count-text">0 files selected</span>
+                    <button class="clear-files-btn" onclick="clearFiles()">✕ Clear All</button>
+                </div>
+
+                <!-- Demo mode -->
+                <div class="demo-banner">
+                    <span class="demo-icon">🧪</span>
+                    <div>
+                        <strong>Demo Mode Available</strong>
+                        <p>No files? Use our sample resumes to test the system instantly.</p>
+                    </div>
+                    <button class="demo-btn" onclick="runDemo()">Run Demo</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit -->
+        <div class="submit-area">
+            <button class="analyze-btn" id="analyze-btn" onclick="analyzeResumes()">
+                <span class="btn-icon">⚡</span>
+                <span class="btn-text">Analyze & Rank Candidates</span>
+                <span class="btn-arrow">→</span>
+            </button>
+            <div class="submit-note">Results include skill matching, TF-IDF similarity scoring, and candidate ranking</div>
+        </div>
+    </div>
+</section>
+
+<!-- LOADING STATE -->
+<div class="loading-overlay" id="loading-overlay" style="display:none">
+    <div class="loading-box">
+        <div class="loading-spinner"></div>
+        <div class="loading-title">Analyzing Resumes...</div>
+        <div class="loading-steps" id="loading-steps">
+            <div class="ls-step active" id="ls-1">📄 Extracting text from files</div>
+            <div class="ls-step" id="ls-2">🧠 Running NLP processing</div>
+            <div class="ls-step" id="ls-3">🎯 Matching skills & computing TF-IDF</div>
+            <div class="ls-step" id="ls-4">🏆 Ranking candidates</div>
+        </div>
+    </div>
+</div>
+
+<!-- RESULTS SECTION -->
+<section class="results-section" id="results-section" style="display:none">
+    <div class="container">
+        <div class="results-header">
+            <div>
+                <div class="section-label">Analysis Complete</div>
+                <h2 class="results-title">Candidate Rankings</h2>
+                <p class="results-meta" id="results-meta"></p>
+            </div>
+            <div class="results-actions">
+                <button class="action-btn secondary" onclick="exportResults()">⬇ Export CSV</button>
+                <button class="action-btn primary" onclick="resetForm()">↺ New Analysis</button>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="summary-cards" id="summary-cards"></div>
+
+        <!-- Score Legend -->
+        <div class="score-legend">
+            <span class="legend-title">Score Guide:</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#22c55e"></span>80–100 Strong Match</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#84cc16"></span>65–79 Good Match</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#f59e0b"></span>50–64 Partial</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>0–49 Weak</span>
+        </div>
+
+        <!-- Candidates Grid -->
+        <div class="candidates-grid" id="candidates-grid"></div>
+
+        <!-- Comparison Chart -->
+        <div class="chart-panel" id="chart-panel">
+            <div class="panel-header">
+                <span class="panel-icon">📊</span>
+                <h3>Score Comparison</h3>
+            </div>
+            <div class="chart-container" id="chart-container"></div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section">
+    <div class="container">
+        <div class="section-label">Under The Hood</div>
+        <h2 class="how-title">How It Works</h2>
+        <div class="steps-grid">
+            <div class="step-card">
+                <div class="step-num">01</div>
+                <div class="step-icon">📄</div>
+                <h3>Text Extraction</h3>
+                <p>PyPDF2 & docx2txt parse raw text from uploaded resume files, handling multi-page documents.</p>
+                <div class="step-tech">PyPDF2 · docx2txt</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">02</div>
+                <div class="step-icon">🧠</div>
+                <h3>NLP Processing</h3>
+                <p>spaCy Named Entity Recognition extracts candidate name, contact info, education, and experience.</p>
+                <div class="step-tech">spaCy · NLTK · Regex</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">03</div>
+                <div class="step-icon">🎯</div>
+                <h3>Skill Matching</h3>
+                <p>A curated 100+ skills database is cross-referenced against resume content for precise matching.</p>
+                <div class="step-tech">Keyword DB · NLP</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">04</div>
+                <div class="step-icon">📐</div>
+                <h3>TF-IDF Similarity</h3>
+                <p>scikit-learn vectorizes resumes and the JD, then computes cosine similarity for relevance scoring.</p>
+                <div class="step-tech">TF-IDF · Cosine Similarity</div>
+            </div>
+            <div class="step-card">
+                <div class="step-num">05</div>
+                <div class="step-icon">🏆</div>
+                <h3>Weighted Ranking</h3>
+                <p>Five criteria (skills 40%, similarity 25%, experience 20%, education 10%, quality 5%) combine into a final score.</p>
+                <div class="step-tech">Weighted Algorithm</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="footer-brand">⬡ RecruitAI</div>
+    <div class="footer-meta">Built with Python · Flask · spaCy · scikit-learn · PyPDF2</div>
+    <div class="footer-note">Academic Project — AI Resume Screening System</div>
+</footer>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>
